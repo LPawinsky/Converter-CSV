@@ -1,6 +1,7 @@
 import pandas as pd
 import datetime as dt
-import calendar
+
+data_to_df = []
 
 def create_quarters(df):
     df.date = pd.to_datetime(df.Date)
@@ -62,15 +63,23 @@ def get_prices_of_period(df, startDay, endDay):
     opening_price = filtered_dates["Open"].iloc[len(filtered_dates.index)-len(filtered_dates.index)]
     closing_price = filtered_dates['Close'].iloc[len(filtered_dates.index)-1]
 
-    print(filtered_dates)
-    print('--------------------------------------------------')
-    print(f"Czas kontraktu między: {startDay} -> {endDay}")
-    print('\/\/\/\/\/\/\/\/')
-    print(f"Najwyzsza cena okresu: {highest_price}")
-    print(f"Najnizsza cena okresu: {lowest_price}")
-    print(f'Otwarcie okresu: {opening_price}')
-    print(f'Zamkniecie okresu: {closing_price}')
+    # print('--------------------------------------------------')
+    # print(f"Czas kontraktu między: {startDay} -> {endDay}")
+    # print('\/\/\/\/\/\/\/\/')
+    # print(f"Najwyzsza cena okresu: {highest_price}")
+    # print(f"Najnizsza cena okresu: {lowest_price}")
+    # print(f'Otwarcie okresu: {opening_price}')
+    # print(f'Zamkniecie okresu: {closing_price}')
+    return startDay, endDay, highest_price, lowest_price, opening_price, closing_price
 
+def write_single_period(data):
+    data_to_df.append([data[0], data[4], data[2], data[3], data[5]])
+
+def create_formatted_df(data):
+    print(data)
+    df = pd.DataFrame(data, columns = ['Date', 'Open', 'High', 'Low', 'Close'])
+    print(df)
+    # df.to_csv('output.csv', index=False)
 
 def main():
     data = pd.read_csv('/Users/marianpazdzioch/Desktop/program/eurusd_d.csv')
@@ -88,7 +97,8 @@ def main():
             s = s.date()
             e = pd.to_datetime(normal_time_end)
             e = e.date()
-            get_prices_of_period(full_data_frame, s.strftime("%Y-%m-%d"), e.strftime("%Y-%m-%d"))
+            data = get_prices_of_period(full_data_frame, s.strftime("%Y-%m-%d"), e.strftime("%Y-%m-%d"))
+            write_single_period(data)
         if i == len(periods)-1:
             last_index = df['Date'].index[-1]
             normal_time_start = periods[i].to_datetime64()
@@ -97,7 +107,16 @@ def main():
             s = s.date()
             e = pd.to_datetime(normal_time_end)
             e = e.date()
-            get_prices_of_period(full_data_frame, s.strftime("%Y-%m-%d"), e.strftime("%Y-%m-%d"))
+            data = get_prices_of_period(full_data_frame, s.strftime("%Y-%m-%d"), e.strftime("%Y-%m-%d"))
+            write_single_period(data)
+
+        if len(periods) / 2 % 1:
+            length = len(periods) / 2 - 0.5
+            if len(data_to_df) == int(length):
+                create_formatted_df(data_to_df)
+
+        if len(periods) / 2 == len(data_to_df):
+            print("true")
         
         
     
