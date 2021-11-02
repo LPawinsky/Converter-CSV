@@ -63,23 +63,16 @@ def get_prices_of_period(df, startDay, endDay):
     opening_price = filtered_dates["Open"].iloc[len(filtered_dates.index)-len(filtered_dates.index)]
     closing_price = filtered_dates['Close'].iloc[len(filtered_dates.index)-1]
 
-    # print('--------------------------------------------------')
-    # print(f"Czas kontraktu między: {startDay} -> {endDay}")
-    # print('\/\/\/\/\/\/\/\/')
-    # print(f"Najwyzsza cena okresu: {highest_price}")
-    # print(f"Najnizsza cena okresu: {lowest_price}")
-    # print(f'Otwarcie okresu: {opening_price}')
-    # print(f'Zamkniecie okresu: {closing_price}')
     return startDay, endDay, highest_price, lowest_price, opening_price, closing_price
 
 def write_single_period(data):
-    data_to_df.append([data[0], data[4], data[2], data[3], data[5]])
+    data_to_df.append([data[1], data[4], data[2], data[3], data[5]])
 
 def create_formatted_df(data):
     print(data)
     df = pd.DataFrame(data, columns = ['Date', 'Open', 'High', 'Low', 'Close'])
     print(df)
-    # df.to_csv('output.csv', index=False)
+    df.to_csv('output2.csv', index=False)
 
 def main():
     data = pd.read_csv('/Users/marianpazdzioch/Desktop/program/eurusd_d.csv')
@@ -117,7 +110,5 @@ def main():
 
         if len(periods) / 2 == len(data_to_df):
             print("true")
-        
-        
     
 main()
