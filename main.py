@@ -1,114 +1,55 @@
-import pandas as pd
-import datetime as dt
+from main_script import script
+from tkinter import *
+from tkinter import filedialog
+import sys
+import os
 
-data_to_df = []
-
-def create_quarters(df):
-    df.date = pd.to_datetime(df.Date)
-    df['Quarter'] = pd.PeriodIndex(df.date, freq='Q')
-    return df
-
-def create_names_from_date(df):
-    df.date = pd.to_datetime(df.Date)
-    df['Dayname'] = df.date.dt.day_name()
-    df['Day'] = pd.DatetimeIndex(df['Date']).day
-    df['Month'] = df.date.dt.month_name().str[:3]
-    df['Year'] = pd.DatetimeIndex(df['Date']).year
-    return df
+class State():
+    path = None
+    output = None
 
 
-def period_create(df):
-    periods = []
-    third_fridays = pd.date_range(df['Date'].iloc[len(df.index)-len(df.index)], df['Date'].iloc[len(df.index)-1], freq='WOM-3FRI')
-    starting_days_array = []
-    ending_days_array = []
-    for date in third_fridays:
-        date = date + dt.timedelta(days=3)
-        if date.month == 3:
-            starting_days_array.append(date)
-        if date.month == 6:
-            starting_days_array.append(date)
-        if date.month == 9:
-            starting_days_array.append(date)
-        if date.month == 12:
-            starting_days_array.append(date)
-    for date in third_fridays:
-        if date.month == 3:
-            ending_days_array.append(date)
-        if date.month == 6:
-            ending_days_array.append(date)
-        if date.month == 9:
-            ending_days_array.append(date)
-        if date.month == 12:
-            ending_days_array.append(date)
+state = State
 
-    if len(starting_days_array) == len(ending_days_array):
-        for index, date in enumerate(starting_days_array):
-            ending_days_array_index = len(ending_days_array)-1
-            if index < ending_days_array_index:
-                periods.append(date)
-                periods.append(ending_days_array[index+1])
-            if index == ending_days_array_index:
-                periods.append(date)
-    return periods
+def exit():
+    sys.exit(root)
+
+def choose_file_path():
+    file_path = filedialog.askopenfilename(filetypes=[('DANE CSV','.csv')])
+    state.path = file_path
+    print(state.path)
+
+def get_output():
+    output_path = filedialog.askdirectory()
+    state.output = output_path
+    print(state.output)
+
+def start_conversion():
+    if not (state.path is None) and not (state.output is None):
+        head, tail = os.path.split(state.path)
+        filename = tail
+        script(state.path, state.output, filename)
 
 
-def get_prices_of_period(df, startDay, endDay):
-    after_start_date = df["Date"] >= startDay
-    before_end_date = df["Date"] <= endDay
-    between_two_dates = after_start_date & before_end_date
-    filtered_dates = df.loc[between_two_dates]
-    highest_price = filtered_dates['Highest'].max()
-    lowest_price = filtered_dates['Lowest'].min()
-    opening_price = filtered_dates["Open"].iloc[len(filtered_dates.index)-len(filtered_dates.index)]
-    closing_price = filtered_dates['Close'].iloc[len(filtered_dates.index)-1]
+root = Tk()
+root.title('Konwerter kwartałów')
+root.geometry('800x600')
 
-    return startDay, endDay, highest_price, lowest_price, opening_price, closing_price
+button = Button(root, text="Wybierz plik", command=choose_file_path)
+button.pack()
+button.place(relx=0.5,rely=0.42,anchor=CENTER)
 
-def write_single_period(data):
-    data_to_df.append([data[1], data[4], data[2], data[3], data[5]])
+button = Button(root, text="Wybierz ściezkę wyjścia", command=get_output)
+button.pack()
+button.place(relx=0.5,rely=0.46,anchor=CENTER)
 
-def create_formatted_df(data):
-    print(data)
-    df = pd.DataFrame(data, columns = ['Date', 'Open', 'High', 'Low', 'Close'])
-    print(df)
-    df.to_csv('output2.csv', index=False)
+button = Button(root, text="Konwertuj", command=start_conversion)
+button.pack()
+button.place(relx=0.5,rely=0.5,anchor=CENTER)
 
-def main():
-    data = pd.read_csv('/Users/marianpazdzioch/Desktop/program/eurusd_d.csv')
-    df = pd.DataFrame(data, columns=['Data','Najwyzszy', 'Najnizszy','Otwarcie','Zamkniecie'])
-    df = df.rename({'Najwyzszy':'Highest', 'Najnizszy':'Lowest', 'Otwarcie':'Open', 'Zamkniecie':'Close', 'Data':'Date',}, axis='columns')
+button = Button(root, text="Wyjdź", command=exit)
+button.pack()
+button.place(relx=0.5,rely=0.54,anchor=CENTER)
 
-    quarterDataFrame = create_quarters(df)
-    full_data_frame = create_names_from_date(quarterDataFrame)
-    periods = period_create(full_data_frame)
-    for i in range(0, len(periods), 2):
-        if i < len(periods)-1:
-            normal_time_start = periods[i].to_datetime64()
-            normal_time_end = periods[i+1].to_datetime64()
-            s = pd.to_datetime(normal_time_start)
-            s = s.date()
-            e = pd.to_datetime(normal_time_end)
-            e = e.date()
-            data = get_prices_of_period(full_data_frame, s.strftime("%Y-%m-%d"), e.strftime("%Y-%m-%d"))
-            write_single_period(data)
-        if i == len(periods)-1:
-            last_index = df['Date'].index[-1]
-            normal_time_start = periods[i].to_datetime64()
-            normal_time_end = df['Date'][last_index]
-            s = pd.to_datetime(normal_time_start)
-            s = s.date()
-            e = pd.to_datetime(normal_time_end)
-            e = e.date()
-            data = get_prices_of_period(full_data_frame, s.strftime("%Y-%m-%d"), e.strftime("%Y-%m-%d"))
-            write_single_period(data)
 
-        if len(periods) / 2 % 1:
-            length = len(periods) / 2 - 0.5
-            if len(data_to_df) == int(length):
-                create_formatted_df(data_to_df)
-
-        if len(periods) / 2 == len(data_to_df):
-            print("true")
-    
-main()
+root.mainloop()
