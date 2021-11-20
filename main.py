@@ -7,9 +7,15 @@ import os
 class State():
     path = None
     output = None
+    version = "0.1"
 
 
 state = State
+
+def error_label(error: str) -> str:
+    label = Label(root, text=error)
+    label.pack()
+    label.place(relx=0.5,rely=0.2,anchor=CENTER)
 
 def exit():
     sys.exit(root)
@@ -30,7 +36,7 @@ def start_conversion():
         filename = tail
         script(state.path, state.output, filename)
     except:
-        print('Błąd')
+        error_label("Brak ściezki lub pliku")
 
     # if not (state.path is None) and not (state.output is None):
     #     head, tail = os.path.split(state.path)
@@ -44,9 +50,6 @@ def start_conversion():
 root = Tk()
 root.title('Konwerter kwartałów')
 root.geometry('600x400')
-
-label = Label(root, text="Some unit")
-label.pack()
 
 button = Button(root, text="Wybierz plik", command=choose_file_path)
 button.pack()
