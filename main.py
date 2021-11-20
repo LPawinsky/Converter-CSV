@@ -15,7 +15,7 @@ def exit():
     sys.exit(root)
 
 def choose_file_path():
-    file_path = filedialog.askopenfilename(filetypes=[('DANE CSV','.csv')])
+    file_path = filedialog.askopenfilename(filetypes=[('Dane CSV (.csv)','.csv')])
     state.path = file_path
     print(state.path)
 
@@ -29,6 +29,9 @@ def start_conversion():
         head, tail = os.path.split(state.path)
         filename = tail
         script(state.path, state.output, filename)
+    
+    if state.path is None and state.output is None:
+        print(f"Brak atrybutów: ściezka CSV - {state.path} lub ściezka zapisu - {state.output}")
 
 
 root = Tk()
