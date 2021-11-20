@@ -8,10 +8,17 @@ class State():
     path = None
     output = None
     filename = None
+    done = False
     version = "0.1"
 
 
 state = State
+
+def reset():
+    state.path = None
+    state.output = None
+    state.filename = None
+    state.done = False
 
 def error_label(error: str) -> str:
     label = Label(root, text=error)
@@ -64,6 +71,13 @@ def start_conversion():
 root = Tk()
 root.title(f'Konwerter kwartałów v{state.version}')
 root.geometry('600x400')
+
+
+if state.done is True:
+    label = Label(root, text="Zakonczono konwersje kwartału")
+    label.pack()
+    label.place(relx=0.5,rely=0.8,anchor=CENTER)
+    state.reset()
 
 button = Button(root, text="Wybierz plik", command=choose_file_path)
 button.pack()
