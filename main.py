@@ -7,6 +7,7 @@ import os
 class State():
     path = None
     output = None
+    filename = None
     version = "0.1"
 
 
@@ -17,35 +18,39 @@ def error_label(error: str) -> str:
     label.pack()
     label.place(relx=0.5,rely=0.2,anchor=CENTER)
 
+def path_label(path):
+    print(path)
+
+def output_label(path):
+    print(path)
+
+def filename_label(filename):
+    print(filename)
+
 def exit():
     sys.exit(root)
 
 def choose_file_path():
     file_path = filedialog.askopenfilename(filetypes=[('Dane CSV (.csv)','.csv')])
     state.path = file_path
-    print(state.path)
+    head, tail = os.path.split(state.path)
+    state.filename = tail
 
 def get_output():
     output_path = filedialog.askdirectory()
     state.output = output_path
-    print(state.output)
 
 def start_conversion():
     try:
-        head, tail = os.path.split(state.path)
-        filename = tail
-        script(state.path, state.output, filename)
+        script(state.path, state.output, state.filename)
     except:
-        error_label("Brak ściezki lub pliku")
-
-    # if not (state.path is None) and not (state.output is None):
-    #     head, tail = os.path.split(state.path)
-    #     filename = tail
-    #     script(state.path, state.output, filename)
-    
-    # if state.path is None and state.output is None:
-    #     print(f"Brak atrybutów: ściezka CSV - {state.path} lub ściezka zapisu - {state.output}")
-
+        if state.path is None or state.output is None:
+            if state.path is None:
+                error_label("Brak pliku")
+            if state.output is None:
+                error_label("Brak ściezki wyjścia")
+            if state.path is None and state.output is None:
+                error_label("Brak atrybutów")
 
 root = Tk()
 root.title('Konwerter kwartałów')
