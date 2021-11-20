@@ -43,7 +43,10 @@ def start_conversion():
 
 root = Tk()
 root.title('Konwerter kwartałów')
-root.geometry('800x600')
+root.geometry('600x400')
+
+label = Label(root, text="Some unit")
+label.pack()
 
 button = Button(root, text="Wybierz plik", command=choose_file_path)
 button.pack()
