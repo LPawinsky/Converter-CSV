@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from main_script import script
 from tkinter import *
 from tkinter import filedialog
@@ -20,22 +21,22 @@ def reset():
     state.filename = None
     state.done = False
 
-def error_label(error: str) -> str:
+def error_label(error):
     label = Label(root, text=error)
     label.pack()
     label.place(relx=0.5,rely=0.2,anchor=CENTER)
 
-def path_label(path: str) -> str:
+def path_label(path):
     label = Label(root, text=path)
     label.pack()
     label.place(relx=0.2,rely=0.33,anchor=CENTER)
 
-def output_label(path: str) -> str:
+def output_label(path):
     label = Label(root, text=path)
     label.pack()
     label.place(relx=0.6,rely=0.33,anchor=CENTER)
 
-def filename_label(filename: str) -> str:
+def filename_label(filename):
     label = Label(root, text=filename)
     label.pack()
     label.place(relx=0.5,rely=0.3,anchor=CENTER)
@@ -69,7 +70,7 @@ def start_conversion():
                 error_label("Brak atrybutów")
 
 root = Tk()
-root.title(f'Konwerter kwartałów v{state.version}')
+root.title('Konwerter kwartałów v{}'.format(state.version))
 root.geometry('600x400')
 
 
