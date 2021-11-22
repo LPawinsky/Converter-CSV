@@ -42,13 +42,14 @@ def english_check(data):
         return data
 
 def main():
-    data = pd.read_csv('/Users/marianpazdzioch/Desktop/program/eurusd_d.csv')
+    path = '/Users/marianpazdzioch/Desktop/program/eurusd_d.csv'
+    data = pd.read_csv(path)
     df = pd.DataFrame(data)
 
     with_all_columns = columns_add(english_check(df))
     correct_dataframe_with_periods = add_open_int(with_all_columns)
-    # txt_convert(values)
-    output(correct_dataframe_with_periods)
+    txt_convert(correct_dataframe_with_periods,path)
+    # output(correct_dataframe_with_periods)
 
 def output(data):
     df = pd.DataFrame(data)
