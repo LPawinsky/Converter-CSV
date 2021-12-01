@@ -68,7 +68,7 @@ def write_single_period(data):
 def create_formatted_df(data, path, output_path):
     df = pd.DataFrame(data, columns = ['Date', 'Open', 'High', 'Low', 'Close','Vol','OpenInt'])
     print(df)
-    txt_convert(df, path, output_path)
+    txt_convert(df, path, output_path, 'Q')
 
 def quarter_script(path, output):
     data = pd.read_csv(path)

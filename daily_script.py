@@ -43,6 +43,6 @@ def daily_script(path, output):
 
     with_all_columns = columns_add(english_check(df))
     correct_dataframe_with_periods = add_open_int(with_all_columns)
-    txt_convert(correct_dataframe_with_periods, path, output)
+    txt_convert(correct_dataframe_with_periods, path, output, 'D')
 
 # daily_script('/Users/marianpazdzioch/Desktop/program/eurusd_d.csv', '/Users/marianpazdzioch/Desktop/program')

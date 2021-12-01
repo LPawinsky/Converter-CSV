@@ -2,9 +2,9 @@ import pandas as pd
 import os
 import re
 
-def create_all_columns(df):
+def create_all_columns(df, param):
     df.columns = df.columns.str.upper()
-    df = df.assign(TICKER = 0, PER = 'D', TIME = '000000')
+    df = df.assign(TICKER = 0, PER = param, TIME = '000000')
     df = df[['TICKER', 'PER', 'DATE','TIME', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOL', 'OPENINT']]
     return df
 
@@ -36,9 +36,9 @@ def output_file(df, output_path, filename):
 def print_func(df):
     print(df)
 
-def txt_convert(data, path, output):
+def txt_convert(data, path, output, param):
     print(data)
-    df_with_all_cols = create_all_columns(data)
+    df_with_all_cols = create_all_columns(data, param)
     formatted_cols = format_col_names(df_with_all_cols)
     filename = filename_for_ticker(path)
     df_with_ticker = ticker(formatted_cols, filename)
