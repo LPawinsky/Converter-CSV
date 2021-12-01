@@ -5,19 +5,19 @@ import re
 def create_all_columns(df):
     df.columns = df.columns.str.upper()
     df = df.assign(TICKER = 0, PER = 'D', TIME = '000000')
-    df = df[['TICKER', 'PER', 'DATE','TIME', 'OPEN', 'HIGHEST', 'LOWEST', 'CLOSE', 'VOLUME', 'OPENINT']]
+    df = df[['TICKER', 'PER', 'DATE','TIME', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOL', 'OPENINT']]
     return df
 
 def format_col_names(df):
-    df = df.rename({'TICKER':'<TICKER>','PER':'<PER>','DATE':'<DATE>','TIME':'<TIME>','OPEN':'<OPEN>','HIGHEST':'<HIGH>','LOWEST':'<LOW>','CLOSE':'<CLOSE>','VOLUME':'<VOL>','OPENINT':'<OPENINT>'}, axis='columns')
+    df = df.rename({'TICKER':'<TICKER>','PER':'<PER>','DATE':'<DATE>','TIME':'<TIME>','OPEN':'<OPEN>','HIGH':'<HIGH>','LOW':'<LOW>','CLOSE':'<CLOSE>','VOL':'<VOL>','OPENINT':'<OPENINT>'}, axis='columns')
     return df
 
 def filename_for_ticker(path):
-    filename = os.path.basename(path)
-    filename = re.sub('[!@#$_-]', '', filename)
-    filename2 = filename
-    filename2 = filename2[:-5]
-    return filename2
+    fn = os.path.basename(path)
+    fn = re.sub('[!@#$_-]', '', fn)
+    filename = fn
+    filename = filename[:-5]
+    return filename
 
 def ticker(df, filename):
     df['<TICKER>'] = filename.upper()
@@ -28,14 +28,19 @@ def date_formatting(df):
     df['<DATE>'] = df['<DATE>'].dt.strftime('%Y%m%d')
     return df
 
-def output(df):
+def output_file(df, output_path, filename):
     df = pd.DataFrame(df)
-    df.to_csv('output.txt', index=False)
+    print(df)
+    df.to_csv(os.path.join(output_path,r'{}.txt'.format(filename)), index=False)
 
-def txt_convert(data, path):
+def print_func(df):
+    print(df)
+
+def txt_convert(data, path, output):
+    print(data)
     df_with_all_cols = create_all_columns(data)
     formatted_cols = format_col_names(df_with_all_cols)
     filename = filename_for_ticker(path)
     df_with_ticker = ticker(formatted_cols, filename)
     formatted_date_df = date_formatting(df_with_ticker)
-    output(formatted_date_df)
+    output_file(formatted_date_df, output, filename_for_ticker(path))

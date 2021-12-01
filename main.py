@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
-from main_script import script
+from quarter_script import quarter_script
+from daily_script import daily_script
 from tkinter import *
 from tkinter import filedialog
 import sys
 import os
+
+f = open('version.txt', 'r')
+content = f.read()
 
 class State():
     path = None
     output = None
     filename = None
     done = False
-    version = "0.1"
+    version = "0.2"
 
 
 state = State
@@ -57,9 +61,9 @@ def get_output():
     state.output = output_path
     output_label(state.output)
 
-def start_conversion():
+def start_conversion_of_quarter():
     try:
-        script(state.path, state.output, state.filename)
+        quarter_script(state.path, state.output)
     except:
         if state.path is None or state.output is None:
             if state.path is None:
@@ -67,7 +71,25 @@ def start_conversion():
             if state.output is None:
                 error_label("Brak ściezki wyjścia")
             if state.path is None and state.output is None:
-                error_label("Brak atrybutów")
+                error_label("Brak atrybutów (nazwa pliku, ścieka wyjścia)")
+
+def start_conversion_of_daily():
+    try:
+        daily_script(state.path, state.output)
+    except:
+        if state.path is None or state.output is None:
+            if state.path is None:
+                error_label("Brak pliku")
+            if state.output is None:
+                error_label("Brak ściezki wyjścia")
+            if state.path is None and state.output is None:
+                error_label("Brak atrybutów (nazwa pliku, ścieka wyjścia)")
+
+def version_window():
+    window = Toplevel(root)
+    window.title("Wersja programu")
+    window.geometry("400x200")
+    Text(window, text=content).pack()
 
 root = Tk()
 root.title('Konwerter kwartałów v{}'.format(state.version))
@@ -82,19 +104,27 @@ if state.done is True:
 
 button = Button(root, text="Wybierz plik", command=choose_file_path)
 button.pack()
-button.place(relx=0.5,rely=0.40,anchor=CENTER)
+button.place(relx=0.5,rely=0.38,anchor=CENTER)
 
 button = Button(root, text="Wybierz ściezkę wyjścia", command=get_output)
 button.pack()
-button.place(relx=0.5,rely=0.50,anchor=CENTER)
+button.place(relx=0.5,rely=0.46,anchor=CENTER)
 
-button = Button(root, text="Konwertuj", command=start_conversion)
+button = Button(root, text="Konwertuj kwartalnie", command=start_conversion_of_quarter)
 button.pack()
-button.place(relx=0.5,rely=0.60,anchor=CENTER)
+button.place(relx=0.5,rely=0.54,anchor=CENTER)
+
+button = Button(root, text="Konwertuj dziennie (OPEN_INT)", command=start_conversion_of_daily)
+button.pack()
+button.place(relx=0.5,rely=0.62,anchor=CENTER)
 
 button = Button(root, text="Wyjdź", command=exit)
 button.pack()
 button.place(relx=0.5,rely=0.70,anchor=CENTER)
+
+button = Button(root, text="Wersja", command=version_window)
+button.pack()
+button.place(relx=0.9,rely=0.9,anchor=CENTER)
 
 
 root.mainloop()
