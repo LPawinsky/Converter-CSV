@@ -1,0 +1,13 @@
+* v0.2
+    - poprawki obsługi CSV
+    - nowe formatowanie plików
+    - tworzenie formatowania PRN
+    - obsługa TXT
+    - setup dla konwersji dziennej (OPENINT)
+    - obsługa zapisu oddzielona od reszty programu
+
+* v0.1
+    - setup dla konwersji kwartalnej
+    - obsługa ściezek i otwierania plikow
+    - wsparcie WIN 7
+    - pliki CSV
