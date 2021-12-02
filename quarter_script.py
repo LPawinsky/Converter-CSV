@@ -68,13 +68,20 @@ def write_single_period(data):
 def create_formatted_df(data, path, output_path):
     df = pd.DataFrame(data, columns = ['Date', 'Open', 'High', 'Low', 'Close','Vol','OpenInt'])
     print(df)
-    txt_convert(df, path, output_path, 'Q')
+    txt_convert(df, path, output_path, 'D')
+
+def english_check(data):
+    if sorted(data)[0] == 'Data':
+        df = pd.DataFrame(data, columns=['Data','Najwyzszy', 'Najnizszy','Otwarcie','Zamkniecie','Vol','OpenInt'])
+        df = df.rename({'Najwyzszy':'High', 'Najnizszy':'Low', 'Otwarcie':'Open', 'Zamkniecie':'Close', 'Data':'Date',}, axis='columns')
+    if sorted(data)[0] != 'Data':
+        df = pd.DataFrame(data, columns=['Date', 'High', 'Low', 'Open', 'Close', 'Vol', 'OpenInt'])
+
+    return df
 
 def quarter_script(path, output):
     data = pd.read_csv(path)
-    df = pd.DataFrame(data, columns=['Data','Najwyzszy', 'Najnizszy','Otwarcie','Zamkniecie','Vol','OpenInt'])
-    df = df.rename({'Najwyzszy':'High', 'Najnizszy':'Low', 'Otwarcie':'Open', 'Zamkniecie':'Close', 'Data':'Date',}, axis='columns')
-    print(data)
+    df = english_check(data)
     quarterDataFrame = create_quarters(df)
     full_data_frame = create_names_from_date(quarterDataFrame)
     periods = period_create(full_data_frame)
@@ -106,5 +113,5 @@ def quarter_script(path, output):
             print("true")
         formatted_periods = len(periods) / 2
 
-# quarter_script('/Users/marianpazdzioch/Desktop/program/eurusd_d.csv', '/Users/marianpazdzioch/Desktop/program')
+# quarter_script('/Users/marianpazdzioch/Desktop/program/pleurusd.csv', '/Users/marianpazdzioch/Desktop/program')
     

@@ -1,3 +1,8 @@
+* v0.2.1
+    - dodana obsługa angielskim plików w konwersji kwartalnej
+    - poprawki UI
+    - version.txt - usuniete - stworzony pliku zapisu txt w wersjach
+
 * v0.2
     - poprawki obsługi CSV
     - nowe formatowanie plików

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from quarter_script import quarter_script
 from daily_script import daily_script
+from version import version_window
 from tkinter import *
 from tkinter import filedialog
 import sys
@@ -14,7 +15,7 @@ class State():
     output = None
     filename = None
     done = False
-    version = "0.2"
+    version = "0.2.1"
 
 
 state = State
@@ -85,11 +86,8 @@ def start_conversion_of_daily():
             if state.path is None and state.output is None:
                 error_label("Brak atrybutów (nazwa pliku, ścieka wyjścia)")
 
-def version_window():
-    window = Toplevel(root)
-    window.title("Wersja programu")
-    window.geometry("400x200")
-    Text(window, text=content).pack()
+def version():
+    version_window(root, content)
 
 root = Tk()
 root.title('Konwerter kwartałów v{}'.format(state.version))
@@ -122,7 +120,7 @@ button = Button(root, text="Wyjdź", command=exit)
 button.pack()
 button.place(relx=0.5,rely=0.70,anchor=CENTER)
 
-button = Button(root, text="Wersja", command=version_window)
+button = Button(root, text="Wersja", command=version)
 button.pack()
 button.place(relx=0.9,rely=0.9,anchor=CENTER)
 
