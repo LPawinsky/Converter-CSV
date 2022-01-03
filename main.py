@@ -1,128 +1,117 @@
-# -*- coding: utf-8 -*-
-from quarter_script import quarter_script
-from daily_script import daily_script
-from version import version_window
 from tkinter import *
+from tkinter.ttk import *
 from tkinter import filedialog
-import sys
+from version import version_window
+from Decider import Decider
+from State import State
 import os
+import sys
 
-f = open('version.txt', 'r')
-content = f.read()
-
-class State():
-    path = None
-    output = None
-    filename = None
-    done = False
-    version = "0.2.1"
-
-
-state = State
-
-def reset():
-    state.path = None
-    state.output = None
-    state.filename = None
-    state.done = False
+state = State('0.3.1', None, None, None, 0)
+root = Tk()
 
 def error_label(error):
     label = Label(root, text=error)
     label.pack()
-    label.place(relx=0.5,rely=0.2,anchor=CENTER)
+    label.place(relx=0.5,rely=0.15,anchor=CENTER)
 
-def path_label(path):
-    label = Label(root, text=path)
-    label.pack()
-    label.place(relx=0.2,rely=0.33,anchor=CENTER)
-
-def output_label(path):
-    label = Label(root, text=path)
-    label.pack()
-    label.place(relx=0.6,rely=0.33,anchor=CENTER)
-
-def filename_label(filename):
-    label = Label(root, text=filename)
-    label.pack()
-    label.place(relx=0.5,rely=0.3,anchor=CENTER)
-
-def exit():
+def exit_system():
     sys.exit(root)
 
+# decider functions
+
+def trigger_decider(case):
+    decider = Decider(case,str(state.path),str(state.output))
+    if state.path == None:
+        error_label('Brak ściezki pliku')
+    if state.path != None:
+        if state.output == None:
+            error_label('Brak wyjścia końcowego')
+        if state.output != None:
+            decider.case_decide()
+
+
+# button actions
+
+def open_int_button_action():
+    trigger_decider('D')
+
+def quarter_button_action():
+    trigger_decider('Q')
+
+
+# files and outputs
+
 def choose_file_path():
-    file_path = filedialog.askopenfilename(filetypes=[('Dane CSV (.csv)','.csv')])
-    state.path = file_path
-    head, tail = os.path.split(state.path)
-    state.filename = tail
-    path_label(state.path)
-    filename_label(state.filename)
+    file_path = filedialog.askopenfilename(filetypes=[('Dane (.csv)','.csv .txt')])
+    head, tail = os.path.split(str(state.path))
+    state.update_path(str(file_path))
+    state.update_filename(tail)
+    print(state.path, state.filename)
+    path_label()
 
 def get_output():
     output_path = filedialog.askdirectory()
-    state.output = output_path
-    output_label(state.output)
+    state.update_output(output_path)
+    print(state.output)
+    output_label()
 
-def start_conversion_of_quarter():
-    try:
-        quarter_script(state.path, state.output)
-    except:
-        if state.path is None or state.output is None:
-            if state.path is None:
-                error_label("Brak pliku")
-            if state.output is None:
-                error_label("Brak ściezki wyjścia")
-            if state.path is None and state.output is None:
-                error_label("Brak atrybutów (nazwa pliku, ścieka wyjścia)")
 
-def start_conversion_of_daily():
-    try:
-        daily_script(state.path, state.output)
-    except:
-        if state.path is None or state.output is None:
-            if state.path is None:
-                error_label("Brak pliku")
-            if state.output is None:
-                error_label("Brak ściezki wyjścia")
-            if state.path is None and state.output is None:
-                error_label("Brak atrybutów (nazwa pliku, ścieka wyjścia)")
+# functions to write taken parameters, communication labels
 
-def version():
-    version_window(root, content)
 
-root = Tk()
-root.title('Konwerter kwartałów v{}'.format(state.version))
+def path_label():
+    label = Label(root, text='Obiekt konwersji:')
+    label.pack()
+    label.place(relx=0.2,rely=0.20,anchor=CENTER)
+    label = Label(root, text=os.path.basename(os.path.normpath(state.path)))
+    label.pack()
+    label.place(relx=0.2,rely=0.25,anchor=CENTER)
+
+def output_label():
+    label = Label(root, text="Konwersja do:")
+    label.pack()
+    label.place(relx=0.8,rely=0.20,anchor=CENTER)
+    label = Label(root, text=['/',os.path.basename(os.path.normpath(state.output))])
+    label.pack()
+    label.place(relx=0.8,rely=0.25,anchor=CENTER)
+
+
+# main program
+
+
+root.title('Konwerter kwartałów v{}'.format(state.getVersion()))
 root.geometry('600x400')
 
+file_path_button = Button(root, text="Wybierz plik", command=choose_file_path)
+file_path_button.pack()
+file_path_button.place(relx=0.5,rely=0.38,anchor=CENTER)
+file_path_button.configure(state=ACTIVE)
 
-if state.done is True:
-    label = Label(root, text="Zakonczono konwersje kwartału")
-    label.pack()
-    label.place(relx=0.5,rely=0.8,anchor=CENTER)
-    state.reset()
+output_path_button = Button(root, text="Wybierz ściezkę wyjścia", command=get_output)
+output_path_button.pack()
+output_path_button.place(relx=0.5,rely=0.46,anchor=CENTER)
+output_path_button.configure(state=ACTIVE)
 
-button = Button(root, text="Wybierz plik", command=choose_file_path)
-button.pack()
-button.place(relx=0.5,rely=0.38,anchor=CENTER)
+quarter_button = Button(root, text="Konwertuj kwartalnie", command=quarter_button_action)
+quarter_button.pack()
+quarter_button.place(relx=0.5,rely=0.54,anchor=CENTER)
+quarter_button.configure(state=ACTIVE)
 
-button = Button(root, text="Wybierz ściezkę wyjścia", command=get_output)
-button.pack()
-button.place(relx=0.5,rely=0.46,anchor=CENTER)
+open_int_button = Button(root, text="Konwertuj dziennie (OPEN_INT)", command=open_int_button_action)
+open_int_button.pack()
+open_int_button.place(relx=0.5,rely=0.62,anchor=CENTER)
+open_int_button.configure(state=ACTIVE)
 
-button = Button(root, text="Konwertuj kwartalnie", command=start_conversion_of_quarter)
-button.pack()
-button.place(relx=0.5,rely=0.54,anchor=CENTER)
+exit_button = Button(root, text="Wyjdź", command=exit_system)
+exit_button.pack()
+exit_button.place(relx=0.5,rely=0.70,anchor=CENTER)
 
-button = Button(root, text="Konwertuj dziennie (OPEN_INT)", command=start_conversion_of_daily)
-button.pack()
-button.place(relx=0.5,rely=0.62,anchor=CENTER)
+version_button = Button(root, text="Wersja", command=version_window)
+version_button.pack()
+version_button.place(relx=0.9,rely=0.9,anchor=CENTER)
+version_button.configure(state=ACTIVE)
 
-button = Button(root, text="Wyjdź", command=exit)
-button.pack()
-button.place(relx=0.5,rely=0.70,anchor=CENTER)
-
-button = Button(root, text="Wersja", command=version)
-button.pack()
-button.place(relx=0.9,rely=0.9,anchor=CENTER)
 
 
 root.mainloop()

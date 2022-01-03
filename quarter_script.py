@@ -2,6 +2,7 @@ import pandas as pd
 import datetime as dt
 from txt_convert import txt_convert
 
+
 data_to_df = []
 
 def create_quarters(df):
@@ -79,8 +80,12 @@ def english_check(data):
 
     return df
 
-def quarter_script(path, output):
-    data = pd.read_csv(path)
+def quarter_script(path, output, path_data, case):
+    data = None
+    if case == 'path':
+        data = pd.read_csv(path)
+    if case == 'nonpath':
+        data = path_data
     df = english_check(data)
     quarterDataFrame = create_quarters(df)
     full_data_frame = create_names_from_date(quarterDataFrame)
@@ -112,6 +117,4 @@ def quarter_script(path, output):
         if len(periods) / 2 == len(data_to_df):
             print("true")
         formatted_periods = len(periods) / 2
-
-# quarter_script('/Users/marianpazdzioch/Desktop/program/pleurusd.csv', '/Users/marianpazdzioch/Desktop/program')
     

@@ -14,9 +14,9 @@ def format_col_names(df):
 
 def filename_for_ticker(path):
     fn = os.path.basename(path)
-    fn = re.sub('[!@#$_-]', '', fn)
+    fn = re.sub('[!@#$_-].', '', fn)
     filename = fn
-    filename = filename[:-5]
+    filename = filename[:-4]
     return filename
 
 def ticker(df, filename):
@@ -30,14 +30,10 @@ def date_formatting(df):
 
 def output_file(df, output_path, filename):
     df = pd.DataFrame(df)
-    print(df)
     df.to_csv(os.path.join(output_path,r'{}.txt'.format(filename)), index=False)
 
-def print_func(df):
-    print(df)
 
 def txt_convert(data, path, output, param):
-    print(data)
     df_with_all_cols = create_all_columns(data, param)
     formatted_cols = format_col_names(df_with_all_cols)
     filename = filename_for_ticker(path)

@@ -8,18 +8,20 @@ def columns_add(data):
         data['OpenInt'] = 0
         return data
 
-def indices_of_dates(df,third_fridays):
+def indices_of_dates(df,third_fridays, case):
     indices = []
     for date in df['Date']:
+        if case == 'nonpath':
+            date = date.strftime("%Y-%m-%d")
         for friday in third_fridays:
             if date == friday.strftime("%Y-%m-%d"):
                 index = df.index[df['Date'] == friday.strftime("%Y-%m-%d")]
                 indices.append(index)
     return indices
 
-def add_open_int(df):
+def add_open_int(df, case):
     third_fridays = pd.date_range(df['Date'].iloc[len(df.index)-len(df.index)], df['Date'].iloc[len(df.index)-1], freq='WOM-3FRI')
-    indices = indices_of_dates(df,third_fridays)
+    indices = indices_of_dates(df,third_fridays, case)
     for i in indices:
         date = df['Date'].iloc[i]
         month = pd.DatetimeIndex(date).month_name()
@@ -37,12 +39,17 @@ def english_check(data):
     if sorted(data)[0] != 'Data':
         return data
 
-def daily_script(path, output):
-    data = pd.read_csv(path)
+def daily_script(path, output, path_data, case):
+    print(path_data)
+    data = None
+    if case == 'path':
+        data = pd.read_csv(path)
+    if case == 'nonpath':
+        data = path_data
     df = pd.DataFrame(data)
 
     with_all_columns = columns_add(english_check(df))
-    correct_dataframe_with_periods = add_open_int(with_all_columns)
+    correct_dataframe_with_periods = add_open_int(with_all_columns, case)
     txt_convert(correct_dataframe_with_periods, path, output, 'D')
 
-# daily_script('/Users/marianpazdzioch/Desktop/program/eurusd_d.csv', '/Users/marianpazdzioch/Desktop/program')
+# daily_script('/Users/marianpazdzioch/Downloads/wse stocks/4fm.txt', '/Users/marianpazdzioch/Desktop')
