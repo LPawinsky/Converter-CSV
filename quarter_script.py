@@ -53,6 +53,9 @@ def period_create(df):
     return periods
 
 def get_prices_of_period(df, startDay, endDay):
+    df['Date'] = pd.to_datetime(df['Date'])
+    startDay = pd.to_datetime(startDay)
+    endDay = pd.to_datetime(endDay)
     after_start_date = df["Date"] >= startDay
     before_end_date = df["Date"] <= endDay
     between_two_dates = after_start_date & before_end_date
@@ -68,7 +71,6 @@ def write_single_period(data):
 
 def create_formatted_df(data, path, output_path):
     df = pd.DataFrame(data, columns = ['Date', 'Open', 'High', 'Low', 'Close','Vol','OpenInt'])
-    print(df)
     txt_convert(df, path, output_path, 'D')
 
 def english_check(data):
@@ -77,8 +79,36 @@ def english_check(data):
         df = df.rename({'Najwyzszy':'High', 'Najnizszy':'Low', 'Otwarcie':'Open', 'Zamkniecie':'Close', 'Data':'Date',}, axis='columns')
     if sorted(data)[0] != 'Data':
         df = pd.DataFrame(data, columns=['Date', 'High', 'Low', 'Open', 'Close', 'Vol', 'OpenInt'])
-
     return df
+
+def saving(df, periods):
+    for i in range(0, len(periods), 2):
+        if i < len(periods)-1:
+            s = pd.to_datetime(periods[i].to_datetime64())
+            e = pd.to_datetime(periods[i+1].to_datetime64())
+            s = s.date()
+            e = e.date()
+            data = get_prices_of_period(df, s, e)
+            write_single_period(data)
+        if i == len(periods) - 1:
+            s = pd.to_datetime(periods[i].to_datetime64())
+            s = s.date()
+            try:
+                e = pd.to_datetime(periods[i+1].to_datetime64())
+                e = e.date()
+                data = get_prices_of_period(df, s, e)
+                write_single_period(data)
+                break
+            except:
+                max = df['Date'].max()
+                e = max.to_datetime64()
+                e = pd.to_datetime(e)
+                e = e.date()
+                data = get_prices_of_period(df, s, e)
+                write_single_period(data)
+            finally:
+                break
+    return True
 
 def quarter_script(path, output, path_data, case):
     data = None
@@ -90,31 +120,6 @@ def quarter_script(path, output, path_data, case):
     quarterDataFrame = create_quarters(df)
     full_data_frame = create_names_from_date(quarterDataFrame)
     periods = period_create(full_data_frame)
-    for i in range(0, len(periods), 2):
-        if i < len(periods)-1:
-            normal_time_start = periods[i].to_datetime64()
-            normal_time_end = periods[i+1].to_datetime64()
-            s = pd.to_datetime(normal_time_start)
-            s = s.date()
-            e = pd.to_datetime(normal_time_end)
-            e = e.date()
-            data = get_prices_of_period(full_data_frame, s.strftime("%Y-%m-%d"), e.strftime("%Y-%m-%d"))
-            write_single_period(data)
-        if i == len(periods)-1:
-            last_index = df['Date'].index[-2]
-            normal_time_start = periods[i].to_datetime64()
-            normal_time_end = df['Date'][last_index]
-            s = pd.to_datetime(normal_time_start)
-            s = s.date()
-            e = pd.to_datetime(normal_time_end)
-            e = e.date()
-            data = get_prices_of_period(full_data_frame, s.strftime("%Y-%m-%d"), e.strftime("%Y-%m-%d"))
-            write_single_period(data)
-        if len(periods) / 2 % 1:
-            length = len(periods) / 2 - 0.5
-            if len(data_to_df) == int(length):
-                create_formatted_df(data_to_df, path, output)
-        if len(periods) / 2 == len(data_to_df):
-            print("true")
-        formatted_periods = len(periods) / 2
+    if saving(full_data_frame, periods):
+        create_formatted_df(data_to_df, path, output)
     

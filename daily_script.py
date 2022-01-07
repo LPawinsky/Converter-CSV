@@ -40,7 +40,6 @@ def english_check(data):
         return data
 
 def daily_script(path, output, path_data, case):
-    print(path_data)
     data = None
     if case == 'path':
         data = pd.read_csv(path)

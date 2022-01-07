@@ -1,3 +1,4 @@
+import tkinter as tk
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import filedialog
@@ -7,7 +8,7 @@ from State import State
 import os
 import sys
 
-state = State('0.3.1', None, None, None, 0)
+state = State('0.5', None, None, None, 0)
 root = Tk()
 
 def error_label(error):
@@ -21,13 +22,13 @@ def exit_system():
 # decider functions
 
 def trigger_decider(case):
-    decider = Decider(case,str(state.path),str(state.output))
     if state.path == None:
         error_label('Brak ściezki pliku')
     if state.path != None:
         if state.output == None:
             error_label('Brak wyjścia końcowego')
         if state.output != None:
+            decider = Decider(case,str(state.path),str(state.output))
             decider.case_decide()
 
 
@@ -39,6 +40,9 @@ def open_int_button_action():
 def quarter_button_action():
     trigger_decider('Q')
 
+def monthly_button_action():
+    trigger_decider('M')
+
 
 # files and outputs
 
@@ -47,13 +51,11 @@ def choose_file_path():
     head, tail = os.path.split(str(state.path))
     state.update_path(str(file_path))
     state.update_filename(tail)
-    print(state.path, state.filename)
     path_label()
 
 def get_output():
     output_path = filedialog.askdirectory()
     state.update_output(output_path)
-    print(state.output)
     output_label()
 
 
@@ -93,19 +95,25 @@ output_path_button.pack()
 output_path_button.place(relx=0.5,rely=0.46,anchor=CENTER)
 output_path_button.configure(state=ACTIVE)
 
-quarter_button = Button(root, text="Konwertuj kwartalnie", command=quarter_button_action)
+quarter_button = Button(root, text="Konwersja kontraktów kwartalnych", command=quarter_button_action)
 quarter_button.pack()
 quarter_button.place(relx=0.5,rely=0.54,anchor=CENTER)
 quarter_button.configure(state=ACTIVE)
 
-open_int_button = Button(root, text="Konwertuj dziennie (OPEN_INT)", command=open_int_button_action)
+monthly_button = Button(root, text="Konwersja kontraktów miesięcznych", command=monthly_button_action)
+monthly_button.pack()
+monthly_button.place(relx=0.5,rely=0.62,anchor=CENTER)
+monthly_button.configure(state=ACTIVE)
+
+open_int_button = Button(root, text="Dodaj wykres OPEN_INT", command=open_int_button_action)
 open_int_button.pack()
-open_int_button.place(relx=0.5,rely=0.62,anchor=CENTER)
+open_int_button.place(relx=0.5,rely=0.70,anchor=CENTER)
 open_int_button.configure(state=ACTIVE)
 
-exit_button = Button(root, text="Wyjdź", command=exit_system)
+exit_button = tk.Button(root, height=1, width=20, text="Wyjdź", command=exit_system)
 exit_button.pack()
-exit_button.place(relx=0.5,rely=0.70,anchor=CENTER)
+exit_button.place(relx=0.5,rely=0.85,anchor=CENTER)
+exit_button.configure(state=ACTIVE)
 
 version_button = Button(root, text="Wersja", command=version_window)
 version_button.pack()
