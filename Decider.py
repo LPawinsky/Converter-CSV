@@ -1,35 +1,27 @@
-from quarter_script import quarter_script
-from daily_script import daily_script
-from convert_prn_to_data import convert_data
-from monthly_script import monthly_script
-import os
+import os.path
+from pathlib import Path
 
 class Decider:
-    def __init__(self, case, path, output):
-        self.case = case
+    def __init__(self, path, output, case):
         self.path = path
         self.output = output
-        self.ext = os.path.splitext(path)[1]
-
-    def case_decide(self):
+        self.case = case
+        self.ext = str(os.path.splitext(path)[1])
+        self.filename = str(Path(path).stem)
+        
+    def decide(self):
+        from ExtractWindow import extract
         if self.ext == '.csv':
             if self.case == 'Q':
-                quarter_script(self.path, self.output, None, 'path')
-            if self.case == 'D':
-                daily_script(self.path, self.output, None, 'path')
+                extract(self.path, self.output, 'qcsv')
             if self.case == 'M':
-                monthly_script(self.path, self.output, None, 'path')
-
+                extract(self.path, self.output, 'mcsv')
+            if self.case == 'D':
+                extract(self.path, self.output, 'dcsv')
         if self.ext == '.txt':
             if self.case == 'Q':
-                quarter_script(self.path, self.output, convert_data(self.path), 'nonpath')
-            if self.case == 'D':
-                daily_script(self.path, self.output, convert_data(self.path), 'nonpath')
+                extract(self.path, self.output, 'qtxt')
             if self.case == 'M':
-                monthly_script(self.path, self.output, convert_data(self.path), 'nonpath')
-
-
-# decider = Decider('Q', '/Users/marianpazdzioch/Downloads/wse stocks/msz.txt', '/Users/marianpazdzioch/Desktop/konwerter_kwartalny')
-# decider.case_decide()
-# decider1 = Decider('Q', '/Users/marianpazdzioch/Desktop/konwerter_kwartalny/eurpln_d.csv', '/Users/marianpazdzioch/Desktop/konwerter_kwartalny')
-# decider1.case_decide()
+                extract(self.path, self.output, 'mtxt')
+            if self.case == 'D':
+                extract(self.path, self.output, 'dtxt')

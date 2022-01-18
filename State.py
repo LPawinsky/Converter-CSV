@@ -1,28 +1,18 @@
+from time import sleep
+
 class State:
-    def __init__(self, version: str, filename: any, path: any, output: any, progress: int):
+    def __init__(self, path, output_path, version):
+        self.path = path
+        self.output_path = output_path
         self.version = version
-        self.path = path
-        self.filename = filename
-        self.output = output
-        self.progress = progress
 
-    def getVersion(self):
-        return self.version
-
-    def update_path(self, path):
-        self.path = path
-
-    def update_filename(self, filename):
-        self.filename = filename
-
-    def update_output(self, output):
-        self.output = output
-
-    def reset_state(self):
+    def update_path(self, val):
         self.path = None
-        self.filename = None
-        self.output = None
-        self.progress = 0
-        
-    def update_state_bar(self):
-        self.progress+=20
+        sleep(0.2)
+        self.path = val
+
+    def update_output(self, val):
+        self.output_path = None
+        sleep(0.2)
+        self.output_path = val
+    

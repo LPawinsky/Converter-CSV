@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import to_datetime, DataFrame
 import os
 import re
 
@@ -24,17 +24,18 @@ def ticker(df, filename):
     return df
 
 def date_formatting(df):
-    df['<DATE>'] = pd.to_datetime(df['<DATE>'])
+    df['<DATE>'] = to_datetime(df['<DATE>'])
     df['<DATE>'] = df['<DATE>'].dt.strftime('%Y%m%d')
     return df
 
 def output_file(df, output_path, filename):
-    df = pd.DataFrame(df)
+    df = DataFrame(df)
     df.to_csv(os.path.join(output_path,r'{}.txt'.format(filename)), index=False)
 
 
 def txt_convert(data, path, output, param):
-    df_with_all_cols = create_all_columns(data, param)
+    df = DataFrame(data, columns=['Date','Open','High','Low','Close','Vol','OpenInt'])
+    df_with_all_cols = create_all_columns(df, param)
     formatted_cols = format_col_names(df_with_all_cols)
     filename = filename_for_ticker(path)
     df_with_ticker = ticker(formatted_cols, filename)

@@ -7,6 +7,17 @@ def version_window():
     scrollbar.pack(side=RIGHT, fill=Y)
     textbox = Text(root)
     textbox.pack()
+
+
+    textbox.insert(END, " * v0.6\n")
+    textbox.insert(END, "     - zmiana skryptu decyzyjnego\n")
+    textbox.insert(END, "     - nowa walidacja danych\n")
+    textbox.insert(END, "     - dodany progress bar\n")
+    textbox.insert(END, "     - dodany licznik postępy\n")
+    textbox.insert(END, "     - optymalizacja kodu źródłowego\n")
+    textbox.insert(END, "     - integracja kodu źródłowego z konwerterem rolowań\n")
+    textbox.insert(END, "     - usunięcie zbędnych druków w terminalu\n")
+    textbox.insert(END, "     - zmiana rozmieszczenia UI\n\n\n\n")
     textbox.insert(END, " * v0.5\n")
     textbox.insert(END, "     - dodany gotowy skrypt do konwersji miesięcznej\n")
     textbox.insert(END, "     - naprawiony błąd związany z brakiem mozliwości konwersji po\n")

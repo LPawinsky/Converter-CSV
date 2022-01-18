@@ -1,66 +1,44 @@
-import tkinter as tk
-from tkinter import *
-from tkinter.ttk import *
-from tkinter import filedialog
-from version import version_window
-from Decider import Decider
+from tkinter import filedialog, Label, Button, Tk
+from tkinter.constants import ACTIVE, CENTER
 from State import State
+from version import version_window
 import os
-import sys
 
-state = State('0.5', None, None, None, 0)
-root = Tk()
+state = State(None, None, '0.6')
 
-def error_label(error):
-    label = Label(root, text=error)
-    label.pack()
-    label.place(relx=0.5,rely=0.15,anchor=CENTER)
+def version_button_action():
+    version_window()
 
-def exit_system():
-    sys.exit(root)
-
-# decider functions
-
-def trigger_decider(case):
-    if state.path == None:
-        error_label('Brak ściezki pliku')
-    if state.path != None:
-        if state.output == None:
-            error_label('Brak wyjścia końcowego')
-        if state.output != None:
-            decider = Decider(case,str(state.path),str(state.output))
-            decider.case_decide()
-
-
-# button actions
-
-def open_int_button_action():
-    trigger_decider('D')
-
-def quarter_button_action():
-    trigger_decider('Q')
-
-def monthly_button_action():
-    trigger_decider('M')
-
-
-# files and outputs
-
-def choose_file_path():
-    file_path = filedialog.askopenfilename(filetypes=[('Dane (.csv)','.csv .txt')])
-    head, tail = os.path.split(str(state.path))
+def path_button_action():
+    filetypes = (('Pliki .csv .txt', '.csv .txt'))
+    file_path = filedialog.askopenfilename(title='Otwórz', filetypes=filetypes)
     state.update_path(str(file_path))
-    state.update_filename(tail)
     path_label()
 
-def get_output():
+def output_button_action():
     output_path = filedialog.askdirectory()
-    state.update_output(output_path)
+    state.update_output(str(output_path))
     output_label()
 
+def exit_button_action():
+    import sys
+    sys.exit(root)
 
-# functions to write taken parameters, communication labels
 
+def quarter_roll_button_action():
+    from Validate import Validate
+    validate = Validate(state.path, state.output_path, 'Q')
+    validate.validation()
+
+def monthly_roll_button_action():
+    from Validate import Validate
+    validate = Validate(state.path, state.output_path, 'M')
+    validate.validation()
+
+def daily_roll_button_action():
+    from Validate import Validate
+    validate = Validate(state.path, state.output_path, 'D')
+    validate.validation()
 
 def path_label():
     label = Label(root, text='Obiekt konwersji:')
@@ -74,48 +52,44 @@ def output_label():
     label = Label(root, text="Konwersja do:")
     label.pack()
     label.place(relx=0.8,rely=0.20,anchor=CENTER)
-    label = Label(root, text=['/',os.path.basename(os.path.normpath(state.output))])
+    label = Label(root, text=['/',os.path.basename(os.path.normpath(state.output_path))])
     label.pack()
     label.place(relx=0.8,rely=0.25,anchor=CENTER)
 
 
-# main program
-
-
-root.title('Konwerter kwartałów v{}'.format(state.getVersion()))
+root = Tk()
 root.geometry('600x400')
+root.title(f'Konwerter kontraktów v{state.version}')
 
-file_path_button = Button(root, text="Wybierz plik", command=choose_file_path)
-file_path_button.pack()
-file_path_button.place(relx=0.5,rely=0.38,anchor=CENTER)
-file_path_button.configure(state=ACTIVE)
+path_button = Button(root, text='Wybierz plik', command=path_button_action)
+path_button.pack()
+path_button.place(relx=0.5,rely=0.3,anchor=CENTER)
 
-output_path_button = Button(root, text="Wybierz ściezkę wyjścia", command=get_output)
-output_path_button.pack()
-output_path_button.place(relx=0.5,rely=0.46,anchor=CENTER)
-output_path_button.configure(state=ACTIVE)
+output_button = Button(root, text='Wybierz ściezkę wyjścia', command=output_button_action)
+output_button.pack()
+output_button.place(relx=0.5,rely=0.37,anchor=CENTER)
 
-quarter_button = Button(root, text="Konwersja kontraktów kwartalnych", command=quarter_button_action)
-quarter_button.pack()
-quarter_button.place(relx=0.5,rely=0.54,anchor=CENTER)
-quarter_button.configure(state=ACTIVE)
 
-monthly_button = Button(root, text="Konwersja kontraktów miesięcznych", command=monthly_button_action)
-monthly_button.pack()
-monthly_button.place(relx=0.5,rely=0.62,anchor=CENTER)
-monthly_button.configure(state=ACTIVE)
 
-open_int_button = Button(root, text="Dodaj wykres OPEN_INT", command=open_int_button_action)
-open_int_button.pack()
-open_int_button.place(relx=0.5,rely=0.70,anchor=CENTER)
-open_int_button.configure(state=ACTIVE)
+quarter_roll_button = Button(root, text='Wykres kontraktów kwartału', command=quarter_roll_button_action)
+quarter_roll_button.pack()
+quarter_roll_button.place(relx=0.5,rely=0.5,anchor=CENTER)
+quarter_roll_button.configure(state=ACTIVE)
+monthly_roll_button = Button(root, text='Wykres kontraktów miesiąca', command=monthly_roll_button_action)
+monthly_roll_button.pack()
+monthly_roll_button.place(relx=0.5,rely=0.57,anchor=CENTER)
+monthly_roll_button.configure(state=ACTIVE)
+daily_roll_button = Button(root, text='Wykres kontraktów dzienny (OPEN_INT)', command=daily_roll_button_action)
+daily_roll_button.pack()
+daily_roll_button.place(relx=0.5,rely=0.64,anchor=CENTER)
+daily_roll_button.configure(state=ACTIVE)
 
-exit_button = tk.Button(root, height=1, width=20, text="Wyjdź", command=exit_system)
+exit_button = Button(root, height=1, width=20, text='Wyjdź', command=exit_button_action)
 exit_button.pack()
-exit_button.place(relx=0.5,rely=0.85,anchor=CENTER)
+exit_button.place(relx=0.5,rely=0.8,anchor=CENTER)
 exit_button.configure(state=ACTIVE)
 
-version_button = Button(root, text="Wersja", command=version_window)
+version_button = Button(root, text='Wersja', command=version_button_action)
 version_button.pack()
 version_button.place(relx=0.9,rely=0.9,anchor=CENTER)
 version_button.configure(state=ACTIVE)
@@ -123,3 +97,4 @@ version_button.configure(state=ACTIVE)
 
 
 root.mainloop()
+
