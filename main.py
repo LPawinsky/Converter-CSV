@@ -4,7 +4,7 @@ from State import State
 from version import version_window
 import os
 
-state = State(None, None, '0.6')
+state = State(None, None, '0.7')
 
 def version_button_action():
     version_window()
