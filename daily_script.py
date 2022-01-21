@@ -17,7 +17,7 @@ def indices_of_dates(df,third_fridays, case):
     return indices
 
 def add_open_int(df, case):
-    third_fridays = date_range(df['Date'].iloc[len(df.index)-len(df.index)], df['Date'].iloc[len(df.index)-1], freq='WOM-2THU')
+    third_fridays = date_range(df['Date'].iloc[len(df.index)-len(df.index)], df['Date'].iloc[len(df.index)-1], freq='WOM-3FRI')
     indices = indices_of_dates(df,third_fridays, case)
     for i in indices:
         date = df['Date'].iloc[i]
