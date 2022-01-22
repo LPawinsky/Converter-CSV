@@ -8,6 +8,9 @@ def version_window():
     textbox = Text(root)
     textbox.pack()
 
+    textbox.insert(END, " * v0.8\n")
+    textbox.insert(END, "     - dodana konwersja tygodniowa\n")
+    textbox.insert(END, "     - zmiany wizualne\n\n\n\n")
     textbox.insert(END, " * v0.7\n")
     textbox.insert(END, "     - optymalizacja kodu skryptu dziennego (ogromny wzrost wydajności)\n")
     textbox.insert(END, "     - naprawiony skrypt OPEN_INT z wyświetlaniem rolowań\n")

@@ -18,6 +18,8 @@ class Decider:
                 extract(self.path, self.output, 'mcsv')
             if self.case == 'D':
                 extract(self.path, self.output, 'dcsv')
+            if self.case == 'W':
+                extract(self.path, self.output, 'wcsv')
         if self.ext == '.txt':
             if self.case == 'Q':
                 extract(self.path, self.output, 'qtxt')
@@ -25,3 +27,5 @@ class Decider:
                 extract(self.path, self.output, 'mtxt')
             if self.case == 'D':
                 extract(self.path, self.output, 'dtxt')
+            if self.case == 'W':
+                extract(self.path, self.output, 'wtxt')

@@ -4,7 +4,7 @@ from State import State
 from version import version_window
 import os
 
-state = State(None, None, '0.7')
+state = State(None, None, '0.8')
 
 def version_button_action():
     version_window()
@@ -33,6 +33,11 @@ def quarter_roll_button_action():
 def monthly_roll_button_action():
     from Validate import Validate
     validate = Validate(state.path, state.output_path, 'M')
+    validate.validation()
+
+def weekly_roll_button_action():
+    from Validate import Validate
+    validate = Validate(state.path, state.output_path, 'W')
     validate.validation()
 
 def daily_roll_button_action():
@@ -79,14 +84,20 @@ monthly_roll_button = Button(root, text='Wykres kontraktów miesiąca', command=
 monthly_roll_button.pack()
 monthly_roll_button.place(relx=0.5,rely=0.57,anchor=CENTER)
 monthly_roll_button.configure(state=ACTIVE)
+
+weekly_roll_button = Button(root, text='Wykres kontraktów tygodnia', command=weekly_roll_button_action)
+weekly_roll_button.pack()
+weekly_roll_button.place(relx=0.5,rely=0.64,anchor=CENTER)
+weekly_roll_button.configure(state=ACTIVE)
+
 daily_roll_button = Button(root, text='Wykres kontraktów dzienny (OPEN_INT)', command=daily_roll_button_action)
 daily_roll_button.pack()
-daily_roll_button.place(relx=0.5,rely=0.64,anchor=CENTER)
+daily_roll_button.place(relx=0.5,rely=0.71,anchor=CENTER)
 daily_roll_button.configure(state=ACTIVE)
 
-exit_button = Button(root, height=1, width=20, text='Wyjdź', command=exit_button_action)
+exit_button = Button(root, height=1, width=10, text='Wyjdź', command=exit_button_action)
 exit_button.pack()
-exit_button.place(relx=0.5,rely=0.8,anchor=CENTER)
+exit_button.place(relx=0.15,rely=0.9,anchor=CENTER)
 exit_button.configure(state=ACTIVE)
 
 version_button = Button(root, text='Wersja', command=version_button_action)
