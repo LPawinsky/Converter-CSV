@@ -52,7 +52,6 @@ def extract(path, output, case):
             extract_window.update_idletasks()
             label.config(text='Dodaje wykres OPEN_INT')
             open_int = add_open_int(cols, 'nonpath')
-            print(open_int)
             progress['value'] = 85
             refresh_counter(progress['value'])
             extract_window.update_idletasks()
@@ -171,6 +170,6 @@ def extract(path, output, case):
 
 # # extract('/Users/marianpazdzioch/Downloads/wse stocks/prm.txt', '/Users/marianpazdzioch/Desktop/rolowania', 'qtxt')
 # # extract('/Users/marianpazdzioch/Downloads/wse stocks/prm.txt', '/Users/marianpazdzioch/Desktop/rolowania', 'mtxt')
-# extract('/Users/marianpazdzioch/Desktop/konwerter_kwartalny/eurpln_d.csv', '/Users/marianpazdzioch/Desktop/konwerter_kwartalny', 'dcsv')
+# extract('/Users/marianpazdzioch/Downloads/eurpln_d.csv', '/Users/marianpazdzioch/Desktop', 'dcsv')
 # # extract('/Users/marianpazdzioch/Desktop/konwerter_kwartalny/eurpln_d.csv', '/Users/marianpazdzioch/Desktop/rolowania', 'mcsv')
 

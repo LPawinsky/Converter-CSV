@@ -8,6 +8,8 @@ def version_window():
     textbox = Text(root)
     textbox.pack()
 
+    textbox.insert(END, " * v0.8.1\n")
+    textbox.insert(END, "     - poprawka błędu OPENINT z brakiem wskazań\n\n\n\n")
     textbox.insert(END, " * v0.8\n")
     textbox.insert(END, "     - dodana konwersja tygodniowa\n")
     textbox.insert(END, "     - zmiany wizualne\n\n\n\n")

@@ -1,4 +1,5 @@
 from pandas import date_range, DatetimeIndex, DataFrame, to_datetime
+import pandas as pd
 
 def columns_add(data):
     if 'Vol' not in sorted(data):
@@ -7,13 +8,18 @@ def columns_add(data):
         data['OpenInt'] = 0
         return data
 
+def convert_third_fridays(third_fridays):
+    new_third_fridays = []
+    for friday in third_fridays:
+        new_third_fridays.append(friday.date())
+    return new_third_fridays
+
 def indices_of_dates(df,third_fridays, case):
     indices = []
-    for f in third_fridays:
-        f = f.strftime('%Y-%m-%d')
+    fridays = convert_third_fridays(third_fridays)
     for date in df['Date']:
         index = df.index
-        if date in third_fridays:
+        if date in fridays:
             condition = df['Date'] == date
             index_date = index[condition]
             indices.append(index_date)
@@ -23,13 +29,12 @@ def add_open_int(df, case):
     third_fridays = date_range(df['Date'].iloc[len(df.index)-len(df.index)], df['Date'].iloc[len(df.index)-1], freq='WOM-3FRI')
     indices = indices_of_dates(df,third_fridays, case)
     for i in indices:
-        date = df['Date'].iloc[i]
-        date = to_datetime(date)
-        month = DatetimeIndex([date]).month_name()
-        if month[0] == 'March' or month[0] == 'June' or month[0] == 'September' or month[0] == 'December':
-            df.at[i, 'OpenInt'] = 3
+        date = pd.to_datetime(df['Date'].iloc[i])
+        month = date.dt.month
+        if month.item() == 3 or month.item() == 6 or month.item() == 9 or month.item() == 12:
+            df.loc[i, 'OpenInt'] = 3
         else:
-            df.at[i, 'OpenInt'] = 1
+            df.loc[i, 'OpenInt'] = 1
     return df
 
 
